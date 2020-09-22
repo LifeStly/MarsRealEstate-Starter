@@ -20,15 +20,32 @@ package com.example.android.marsrealestate.overview
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.android.marsrealestate.network.BASE_URL
 import com.example.android.marsrealestate.network.MarsApi
+import com.example.android.marsrealestate.network.MarsProperty
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+
 
 /**
  * The [ViewModel] that is attached to the [OverviewFragment].
  */
 class OverviewViewModel : ViewModel() {
+
+    private val moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
+    private val retrofit = Retrofit.Builder()
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .baseUrl(BASE_URL)
+            .build()
 
     // The internal MutableLiveData String that stores the most recent response
     private val _response = MutableLiveData<String>()
@@ -48,16 +65,13 @@ class OverviewViewModel : ViewModel() {
      * Sets the value of the status LiveData to the Mars API status.
      */
     private fun getMarsRealEstateProperties() {
-        MarsApi.retrofitService.getProperties().enqueue(
-                object: Callback<String> {
-                    override fun onResponse(call: Call<String>, response: Response<String>) {
-                        _response.value = response.body()
-                    }
-
-                    override fun onFailure(call: Call<String>, t: Throwable) {
-                        _response.value = "Failure: " + t.message
-                    }
-
-                })
+        viewModelScope.launch {
+            try {
+                val listResult = MarsApi.retrofitService.getProperties()
+                _response.value = "Success: ${listResult.size} Mars properties retrieved"
+            } catch (e: Exception) {
+                _response.value = "Failure: ${e.message}"
+            }
+        }
     }
 }
