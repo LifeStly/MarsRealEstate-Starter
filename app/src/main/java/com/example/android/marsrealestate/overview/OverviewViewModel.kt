@@ -21,31 +21,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.android.marsrealestate.network.BASE_URL
 import com.example.android.marsrealestate.network.MarsApi
-import com.example.android.marsrealestate.network.MarsProperty
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 
 
 /**
  * The [ViewModel] that is attached to the [OverviewFragment].
  */
 class OverviewViewModel : ViewModel() {
-
-    private val moshi = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
-    private val retrofit = Retrofit.Builder()
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl(BASE_URL)
-            .build()
 
     // The internal MutableLiveData String that stores the most recent response
     private val _response = MutableLiveData<String>()
@@ -62,7 +45,8 @@ class OverviewViewModel : ViewModel() {
     }
 
     /**
-     * Sets the value of the status LiveData to the Mars API status.
+     * Sets the value of the response LiveData to the Mars API status or the successful number of
+     * Mars properties retrieved.
      */
     private fun getMarsRealEstateProperties() {
         viewModelScope.launch {
