@@ -22,10 +22,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/overviewFragment">
-    <argument
-        android:name="selectedProperty"
-        app:argType="com.example.android.marsrealestate.network.MarsProperty"
-        />
 
     <fragment
         android:id="@+id/overviewFragment"
@@ -42,6 +38,10 @@
         android:name="com.example.android.marsrealestate.detail.DetailFragment"
         android:label="fragment_detail"
         tools:layout="@layout/fragment_detail">
+        <argument
+            android:name="selectedProperty"
+            app:argType="com.example.android.marsrealestate.network.MarsProperty"
+            />
     </fragment>
 
 </navigation>

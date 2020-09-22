@@ -79,10 +79,14 @@ class PhotoGridAdapter( private val onClickListener: OnClickListener ) :
         }
         holder.bind(marsProperty)
     }
+
+    /**
+     * Custom listener that handles clicks on [RecyclerView] items.  Passes the [MarsProperty]
+     * associated with the current item to the [onClick] function.
+     * @param clickListener lambda that will be called with the current [MarsProperty]
+     */
     class OnClickListener(val clickListener: (marsProperty:MarsProperty) -> Unit) {
         fun onClick(marsProperty:MarsProperty) = clickListener(marsProperty)
-
     }
-
-
 }
+
